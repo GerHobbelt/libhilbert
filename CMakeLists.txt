@@ -1,5 +1,8 @@
 cmake_minimum_required(VERSION 2.6)
-project(libhilbert)
+project(libhilbert
+        VERSION 1.0 DESCRIPTION "Library for N-Dimensional Hilbert Mapping"
+        LANGUAGES C)
+
 set(DIDIR "${PROJECT_SOURCE_DIR}/src")
 
 set(CMAKE_BUILD_TYPE Release)
