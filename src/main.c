@@ -1,5 +1,5 @@
-/*  
- *  Copyright (c) 2013, Adrian M. Partl <apartl@aip.de>, 
+/*
+ *  Copyright (c) 2013, Adrian M. Partl <apartl@aip.de>,
  *                      eScience team AIP Potsdam
  *
  *  Licensed under the Apache License, Version 2.0 (the "License");
@@ -19,7 +19,7 @@
 
 /*! \file main.c
  \brief Test suite for the implementation
- 
+
  Hilbert Key algorithm for N-dimensional Hilbert keys. This library implements the
  method described by Chenyang, Hong, Nengchao 2008 IEEE.
  */

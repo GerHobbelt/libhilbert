@@ -1,39 +1,42 @@
-cmake_minimum_required(VERSION 2.6)
+cmake_minimum_required(VERSION 3.10)
+
 project(libhilbert
         VERSION 1.0 DESCRIPTION "Library for N-Dimensional Hilbert Mapping"
         LANGUAGES C)
 
-set(DIDIR "${PROJECT_SOURCE_DIR}/src")
+set(LIBHILBERT_INCLUDE_DIR ${CMAKE_CURRENT_SOURCE_DIR}/include)
+set(LIBHILBERT_SOURCE_DIR ${CMAKE_CURRENT_SOURCE_DIR}/src)
 
-set(CMAKE_BUILD_TYPE Release)
+add_library(libhilbert
+            # Headers
+            # ${LIBHILBERT_INCLUDE_DIR}/N10.h
+            # ${LIBHILBERT_INCLUDE_DIR}/binaryOps.h
+            # ${LIBHILBERT_INCLUDE_DIR}/hilbertKey.h
+            # Source files
+            ${LIBHILBERT_SOURCE_DIR}/binaryOps.c
+            ${LIBHILBERT_SOURCE_DIR}/hilbertKey.c)
 
-set(_DEFAULT_INCLUDE_INSTALL_DIR "${CMAKE_INSTALL_PREFIX}/include")
-set(_DEFAULT_LIBRARY_INSTALL_DIR "${CMAKE_INSTALL_PREFIX}/lib")
-if(EXISTS "${CMAKE_INSTALL_PREFIX}/lib32/" AND CMAKE_SIZEOF_VOID_P EQUAL 4)
-  set(_DEFAULT_LIBRARY_INSTALL_DIR "${CMAKE_INSTALL_PREFIX}/lib32")
-  elif(EXISTS "${CMAKE_INSTALL_PREFIX}/lib64/" AND CMAKE_SIZEOF_VOID_P EQUAL 8)
-  set(_DEFAULT_LIBRARY_INSTALL_DIR "${CMAKE_INSTALL_PREFIX}/lib64")
-endif()
-
-set(LIBRARY_INSTALL_DIR "${_DEFAULT_LIBRARY_INSTALL_DIR}"
-    CACHE PATH "Install directory for library files")
-set(INCLUDE_INSTALL_DIR "${_DEFAULT_INCLUDE_INSTALL_DIR}"
-    CACHE PATH "Install directory for header files")
-
-set(CMAKE_INSTALL_RPATH_USE_LINK_PATH TRUE)
-
-include_directories("${PROJECT_SOURCE_DIR}/src")
-
-add_definitions(-std=c99)
-
-file(GLOB FILES_SRC
-          "${DIDIR}/*.h"
-          "${DIDIR}/binaryOps.c"
-          "${DIDIR}/hilbertKey.c")
-file(GLOB HEADERS "${DIDIR}/hilbertKey.h")
-
-add_library(libhilbert ${FILES_SRC})
+add_library(libhilbert::libhilbert ALIAS libhilbert) # Library alias
 set_target_properties(libhilbert PROPERTIES PREFIX "")
 
-install(TARGETS libhilbert DESTINATION "${_DEFAULT_LIBRARY_INSTALL_DIR}")
-install(FILES ${HEADERS} DESTINATION "${_DEFAULT_INCLUDE_INSTALL_DIR}")
+# Handle include paths
+target_include_directories(
+  libhilbert
+  PUBLIC $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>
+         $<INSTALL_INTERFACE:include>
+  PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/src)
+
+# Modify target compiler properties
+target_compile_features(libhilbert
+                        PUBLIC
+                        c_std_99 # Require c99
+                        )
+
+target_compile_options(libhilbert
+                       PRIVATE $<$<C_COMPILER_ID:GNU>:-O2> # Enable optimisation
+                                                           # flag for GNU
+                                                           # compilers
+                       )
+
+add_executable(hilbertTest src/main.c)
+target_link_libraries(hilbertTest libhilbert m)
