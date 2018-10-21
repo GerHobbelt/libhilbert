@@ -25,6 +25,7 @@ file(GLOB FILES_SRC "${DIDIR}/*.h" "${DIDIR}/binaryOps.c" "${DIDIR}/hilbertKey.c
 file(GLOB HEADERS "${DIDIR}/hilbertKey.h")
 
 add_library (libhilbert ${FILES_SRC})
+set_target_properties(libhilbert PROPERTIES PREFIX "")
 
 INSTALL(TARGETS libhilbert DESTINATION "${_DEFAULT_LIBRARY_INSTALL_DIR}")
 INSTALL(FILES ${HEADERS} DESTINATION "${_DEFAULT_INCLUDE_INSTALL_DIR}")
